@@ -154,6 +154,41 @@
   background: var(--content-bg);
 }
 
+/* Each navigation destination is rendered as its own focused page. */
+.content > section {
+  display: none;
+}
+
+.dashboard-shell[data-page="overview"] .page-overview,
+.dashboard-shell[data-page="transactions"] .page-transactions,
+.dashboard-shell[data-page="budgets"] .page-budgets-transactions,
+.dashboard-shell[data-page="goals"] .page-goals,
+.dashboard-shell[data-page="forecast"] .page-forecast,
+.dashboard-shell[data-page="debts"] .page-debts,
+.dashboard-shell[data-page="reports"] .page-reports,
+.dashboard-shell[data-page="accounts"] .page-accounts {
+  display: grid;
+}
+
+.dashboard-shell[data-page="transactions"] .budgets-panel,
+.dashboard-shell[data-page="budgets"] .transactions-panel {
+  display: none;
+}
+
+.dashboard-shell[data-page="transactions"] .page-budgets-transactions,
+.dashboard-shell[data-page="budgets"] .page-budgets-transactions {
+  grid-template-columns: 1fr;
+}
+
+.dashboard-shell[data-page="transactions"] .page-transactions,
+.dashboard-shell[data-page="budgets"] .page-transactions {
+  display: block;
+}
+
+.dashboard-shell[data-page="budgets"] .page-budgets {
+  display: block;
+}
+
 .top-navigation {
   position: sticky;
   top: 16px;
