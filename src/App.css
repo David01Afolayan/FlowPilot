@@ -259,6 +259,7 @@
 }
 
 .topbar {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -363,6 +364,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  padding-right: 126px;
+}
+
+.page-theme-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  white-space: nowrap;
 }
 
 button {
@@ -1158,14 +1167,20 @@ button {
   .topbar-actions {
     width: 100%;
     flex-wrap: wrap;
+    padding-right: 0;
   }
 
   .month-picker,
   .ghost-button,
-  .theme-toggle,
   .primary-button {
     flex: 1 1 auto;
     width: 100%;
+  }
+
+  .page-theme-toggle {
+    top: 0;
+    right: 0;
+    width: auto;
   }
 }
 
