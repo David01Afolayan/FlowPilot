@@ -214,6 +214,24 @@ function App() {
         <div className="mini-card"><p>Emergency fund</p><h3>{formatMoney(goals[0]?.current || 0)}</h3><div className="progress-track"><span style={{ width: `${Math.min(((goals[0]?.current || 0) / (goals[0]?.target || 1)) * 100, 100)}%` }} /></div><small>{Math.round(((goals[0]?.current || 0) / (goals[0]?.target || 1)) * 100)}% of target</small></div>
       </aside>
       <main className="content">
+        <nav className="top-navigation" aria-label="Primary navigation">
+          <div className="top-navigation-brand">
+            <span className="top-navigation-mark">F</span>
+            <strong>FlowPilot</strong>
+          </div>
+          <div className="top-navigation-links">
+            {navItems.map(([label, target]) => (
+              <button
+                key={`top-${target}`}
+                type="button"
+                className={`top-navigation-link ${activeSection === target ? 'active' : ''}`}
+                onClick={() => scrollToSection(target)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </nav>
         <header className="topbar"><div><p className="eyebrow muted">Good morning</p><h1>Financial Dashboard</h1></div><div className="topbar-actions"><label className="month-picker"><span>Month</span><select value={selectedMonth} onChange={(event) => setSelectedMonth(event.target.value)}>{monthOptions.map((month) => <option key={month}>{month}</option>)}</select></label><button type="button" className="theme-toggle" onClick={() => setIsDarkMode((value) => !value)}>{isDarkMode ? '☀️ Light' : '🌙 Dark'}</button><button type="button" className="ghost-button" onClick={downloadReport}>Export CSV</button><button type="button" className="primary-button" onClick={() => { resetForm(); scrollToSection('quick-add-section') }}>+ Add entry</button></div></header>
         {notice && <div className="notice" role="status">{notice}<button type="button" onClick={() => setNotice('')}>×</button></div>}
         <section id="overview" className="summary-grid">{[['Monthly income', summary.income], ['Expenses', summary.expenses], ['Savings', summary.savings], ['Net worth', summary.netWorth]].map(([label, value]) => <article className="summary-card" key={label}><p>{label}</p><div className="summary-row"><h3>{formatMoney(value)}</h3><span className={`chip ${value >= 0 ? 'positive' : 'negative'}`}>{value >= 0 ? 'On track' : 'Review'}</span></div></article>)}</section>

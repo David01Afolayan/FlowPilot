@@ -154,6 +154,74 @@
   background: var(--content-bg);
 }
 
+.top-navigation {
+  position: sticky;
+  top: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-height: 58px;
+  margin-bottom: 24px;
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.top-navigation-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  color: var(--text);
+}
+
+.top-navigation-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #8b5cf6, #22c55e);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.top-navigation-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.top-navigation-links::-webkit-scrollbar {
+  display: none;
+}
+
+.top-navigation-link {
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.87rem;
+  transition: 0.2s ease;
+}
+
+.top-navigation-link:hover,
+.top-navigation-link.active {
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--primary);
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -830,6 +898,10 @@ button {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .top-navigation {
+    top: 8px;
   }
 
   .topbar-actions {
