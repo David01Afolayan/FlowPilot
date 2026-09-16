@@ -60,6 +60,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem(themeKey) === 'dark')
   const [selectedMonth, setSelectedMonth] = useState('All months')
   const [activeSection, setActiveSection] = useState('overview')
+  const [isNavOpen, setIsNavOpen] = useState(false)
   const [transactions, setTransactions] = useState(() => normalizeTransactions(readStorage(storageKey, defaultTransactions)))
   const [budgets, setBudgets] = useState(() => readStorage('flowpilot-budgets', categoryDefaults))
   const [goals, setGoals] = useState(() => readStorage('flowpilot-goals', defaultGoals))
@@ -122,6 +123,7 @@ function App() {
 
   const scrollToSection = (id) => {
     setActiveSection(id)
+    setIsNavOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
   const setFormValue = (event) => setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }))
@@ -210,29 +212,15 @@ function App() {
     <div className={`dashboard-shell ${isDarkMode ? 'dark' : ''}`}>
       <aside className="sidebar">
         <div className="brand-block"><div className="brand-mark">F</div><div><p className="eyebrow">Portfolio</p><h2>FlowPilot</h2></div></div>
-        <nav className="nav">{navItems.map(([label, target]) => <button key={target} type="button" className={`nav-item ${activeSection === target ? 'active' : ''}`} onClick={() => scrollToSection(target)}>{label}</button>)}</nav>
         <div className="mini-card"><p>Emergency fund</p><h3>{formatMoney(goals[0]?.current || 0)}</h3><div className="progress-track"><span style={{ width: `${Math.min(((goals[0]?.current || 0) / (goals[0]?.target || 1)) * 100, 100)}%` }} /></div><small>{Math.round(((goals[0]?.current || 0) / (goals[0]?.target || 1)) * 100)}% of target</small></div>
       </aside>
       <main className="content">
-        <nav className="top-navigation" aria-label="Primary navigation">
-          <div className="top-navigation-brand">
-            <span className="top-navigation-mark">F</span>
-            <strong>FlowPilot</strong>
-          </div>
-          <div className="top-navigation-links">
-            {navItems.map(([label, target]) => (
-              <button
-                key={`top-${target}`}
-                type="button"
-                className={`top-navigation-link ${activeSection === target ? 'active' : ''}`}
-                onClick={() => scrollToSection(target)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </nav>
-        <header className="topbar"><div><p className="eyebrow muted">Good morning</p><h1>Financial Dashboard</h1></div><div className="topbar-actions"><label className="month-picker"><span>Month</span><select value={selectedMonth} onChange={(event) => setSelectedMonth(event.target.value)}>{monthOptions.map((month) => <option key={month}>{month}</option>)}</select></label><button type="button" className="theme-toggle" onClick={() => setIsDarkMode((value) => !value)}>{isDarkMode ? '☀️ Light' : '🌙 Dark'}</button><button type="button" className="ghost-button" onClick={downloadReport}>Export CSV</button><button type="button" className="primary-button" onClick={() => { resetForm(); scrollToSection('quick-add-section') }}>+ Add entry</button></div></header>
+        {isNavOpen && <button type="button" className="navigation-backdrop" aria-label="Close navigation" onClick={() => setIsNavOpen(false)} />}
+        <aside className={`navigation-drawer ${isNavOpen ? 'open' : ''}`} aria-label="Primary navigation">
+          <div className="drawer-header"><div className="top-navigation-brand"><span className="top-navigation-mark">F</span><strong>FlowPilot</strong></div><button type="button" className="drawer-close" aria-label="Close navigation" onClick={() => setIsNavOpen(false)}>×</button></div>
+          <div className="drawer-links">{navItems.map(([label, target]) => <button key={`drawer-${target}`} type="button" className={`drawer-link ${activeSection === target ? 'active' : ''}`} onClick={() => scrollToSection(target)}>{label}</button>)}</div>
+        </aside>
+        <header className="topbar"><div className="heading-with-menu"><button type="button" className="menu-button" aria-label="Open navigation" aria-expanded={isNavOpen} onClick={() => setIsNavOpen(true)}>☰</button><div><p className="eyebrow muted">Good morning</p><h1>Financial Dashboard</h1></div></div><div className="topbar-actions"><label className="month-picker"><span>Month</span><select value={selectedMonth} onChange={(event) => setSelectedMonth(event.target.value)}>{monthOptions.map((month) => <option key={month}>{month}</option>)}</select></label><button type="button" className="theme-toggle" onClick={() => setIsDarkMode((value) => !value)}>{isDarkMode ? '☀️ Light' : '🌙 Dark'}</button><button type="button" className="ghost-button" onClick={downloadReport}>Export CSV</button><button type="button" className="primary-button" onClick={() => { resetForm(); scrollToSection('quick-add-section') }}>+ Add entry</button></div></header>
         {notice && <div className="notice" role="status">{notice}<button type="button" onClick={() => setNotice('')}>×</button></div>}
         <section id="overview" className="summary-grid">{[['Monthly income', summary.income], ['Expenses', summary.expenses], ['Savings', summary.savings], ['Net worth', summary.netWorth]].map(([label, value]) => <article className="summary-card" key={label}><p>{label}</p><div className="summary-row"><h3>{formatMoney(value)}</h3><span className={`chip ${value >= 0 ? 'positive' : 'negative'}`}>{value >= 0 ? 'On track' : 'Review'}</span></div></article>)}</section>
         <section id="reports-section" className="panel-grid"><article className="panel chart-panel"><div className="panel-header"><div><p className="eyebrow muted">Spending trend</p><h3>Cash flow report</h3></div><span className="chip positive">{Math.round(percentageUsed)}% used</span></div><div className="chart-bars" aria-label="Cash flow chart">{budgetData.map((item) => <div className="bar-group" key={item.category}><span className="bar" title={`${item.category}: ${formatMoney(item.spent)}`} style={{ height: `${Math.max(Math.min((item.spent / Math.max(item.limit, 1)) * 100, 100), 8)}%` }} /><small>{item.category.slice(0, 3)}</small></div>)}</div></article><article className="panel insights-panel"><div className="panel-header"><div><p className="eyebrow muted">Smart insights</p><h3>What needs attention</h3></div></div><ul className="insight-list">{insights.map((insight) => <li key={insight}>✦ {insight}</li>)}</ul></article></section>
